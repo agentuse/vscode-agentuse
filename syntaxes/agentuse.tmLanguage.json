@@ -1,0 +1,174 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "AgentUse",
+  "scopeName": "source.agentuse",
+  "patterns": [
+    { "include": "#frontmatter" },
+    { "include": "#markdown" }
+  ],
+  "repository": {
+    "frontmatter": {
+      "begin": "\\A(---)",
+      "end": "^(---)\\s*$",
+      "beginCaptures": {
+        "1": { "name": "punctuation.definition.frontmatter.agentuse" }
+      },
+      "endCaptures": {
+        "1": { "name": "punctuation.definition.frontmatter.agentuse" }
+      },
+      "name": "meta.frontmatter.agentuse",
+      "patterns": [
+        { "include": "#yaml" }
+      ]
+    },
+    "yaml": {
+      "patterns": [
+        { "include": "#yaml-comment" },
+        { "include": "#yaml-key-model" },
+        { "include": "#yaml-key-mcp" },
+        { "include": "#yaml-key-toplevel" },
+        { "include": "#yaml-key-nested" },
+        { "include": "#yaml-value-model" },
+        { "include": "#yaml-value-string" },
+        { "include": "#yaml-value-number" },
+        { "include": "#yaml-value-boolean" },
+        { "include": "#yaml-list-item" },
+        { "include": "#yaml-env-var" }
+      ]
+    },
+    "yaml-comment": {
+      "match": "#.*$",
+      "name": "comment.line.number-sign.agentuse"
+    },
+    "yaml-key-model": {
+      "match": "^(model)(:)",
+      "captures": {
+        "1": { "name": "keyword.control.model.agentuse" },
+        "2": { "name": "punctuation.separator.key-value.agentuse" }
+      }
+    },
+    "yaml-key-mcp": {
+      "match": "^(mcp_servers|subagents|tools)(:)",
+      "captures": {
+        "1": { "name": "keyword.control.section.agentuse" },
+        "2": { "name": "punctuation.separator.key-value.agentuse" }
+      }
+    },
+    "yaml-key-toplevel": {
+      "match": "^(timeout|maxSteps)(:)",
+      "captures": {
+        "1": { "name": "variable.parameter.agentuse" },
+        "2": { "name": "punctuation.separator.key-value.agentuse" }
+      }
+    },
+    "yaml-key-nested": {
+      "match": "^(\\s+)(\\w[\\w-]*)(:)",
+      "captures": {
+        "2": { "name": "entity.name.tag.agentuse" },
+        "3": { "name": "punctuation.separator.key-value.agentuse" }
+      }
+    },
+    "yaml-value-model": {
+      "match": "(anthropic|openai|openrouter):([\\w.-]+)",
+      "captures": {
+        "0": { "name": "string.unquoted.model.agentuse" }
+      }
+    },
+    "yaml-value-string": {
+      "patterns": [
+        {
+          "match": "\"[^\"]*\"",
+          "name": "string.quoted.double.agentuse"
+        },
+        {
+          "match": "'[^']*'",
+          "name": "string.quoted.single.agentuse"
+        }
+      ]
+    },
+    "yaml-value-number": {
+      "match": "\\b\\d+\\b",
+      "name": "constant.numeric.agentuse"
+    },
+    "yaml-value-boolean": {
+      "match": "\\b(true|false)\\b",
+      "name": "constant.language.boolean.agentuse"
+    },
+    "yaml-list-item": {
+      "match": "^(\\s*)(-)(\\s+)",
+      "captures": {
+        "2": { "name": "punctuation.definition.list.agentuse" }
+      }
+    },
+    "yaml-env-var": {
+      "match": "\\$\\{([A-Z_][A-Z0-9_]*)\\}",
+      "captures": {
+        "0": { "name": "variable.other.envar.agentuse" },
+        "1": { "name": "variable.other.envar.name.agentuse" }
+      }
+    },
+    "markdown": {
+      "patterns": [
+        { "include": "#markdown-heading" },
+        { "include": "#markdown-bold" },
+        { "include": "#markdown-italic" },
+        { "include": "#markdown-code-block" },
+        { "include": "#markdown-code-inline" },
+        { "include": "#markdown-link" },
+        { "include": "#markdown-list" }
+      ]
+    },
+    "markdown-heading": {
+      "match": "^(#{1,6})\\s+(.*)$",
+      "captures": {
+        "1": { "name": "punctuation.definition.heading.markdown" },
+        "2": { "name": "entity.name.section.markdown" }
+      }
+    },
+    "markdown-bold": {
+      "match": "(\\*\\*|__)(.+?)(\\1)",
+      "captures": {
+        "1": { "name": "punctuation.definition.bold.markdown" },
+        "2": { "name": "markup.bold.markdown" },
+        "3": { "name": "punctuation.definition.bold.markdown" }
+      }
+    },
+    "markdown-italic": {
+      "match": "(\\*|_)(.+?)(\\1)",
+      "captures": {
+        "1": { "name": "punctuation.definition.italic.markdown" },
+        "2": { "name": "markup.italic.markdown" },
+        "3": { "name": "punctuation.definition.italic.markdown" }
+      }
+    },
+    "markdown-code-block": {
+      "begin": "^```(\\w*)$",
+      "end": "^```$",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.code.markdown" },
+        "1": { "name": "entity.name.type.markdown" }
+      },
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.code.markdown" }
+      },
+      "name": "markup.fenced_code.block.markdown"
+    },
+    "markdown-code-inline": {
+      "match": "`[^`]+`",
+      "name": "markup.inline.raw.string.markdown"
+    },
+    "markdown-link": {
+      "match": "\\[([^\\]]+)\\]\\(([^\\)]+)\\)",
+      "captures": {
+        "1": { "name": "string.other.link.title.markdown" },
+        "2": { "name": "markup.underline.link.markdown" }
+      }
+    },
+    "markdown-list": {
+      "match": "^(\\s*)([*+-]|\\d+\\.)\\s+",
+      "captures": {
+        "2": { "name": "punctuation.definition.list.markdown" }
+      }
+    }
+  }
+}

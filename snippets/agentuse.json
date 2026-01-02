@@ -1,0 +1,211 @@
+{
+  "New AgentUse File": {
+    "prefix": ["agentuse", "---"],
+    "body": [
+      "---",
+      "model: ${1|anthropic:claude-sonnet-4-0,anthropic:claude-opus-4-1,anthropic:claude-3-5-haiku-latest,openai:gpt-5,openai:gpt-5-mini|}",
+      "---",
+      "",
+      "You are a helpful assistant.",
+      "",
+      "## Task",
+      "$0"
+    ],
+    "description": "Create a new AgentUse agent file"
+  },
+  "AgentUse with MCP": {
+    "prefix": ["agentuse-mcp", "agent-mcp"],
+    "body": [
+      "---",
+      "model: ${1|anthropic:claude-sonnet-4-0,anthropic:claude-opus-4-1,openai:gpt-5|}",
+      "mcp_servers:",
+      "  ${2:filesystem}:",
+      "    command: \"${3|npx,node,uvx,uv|}\"",
+      "    args:",
+      "      - \"-y\"",
+      "      - \"${4:@modelcontextprotocol/server-filesystem}\"",
+      "      - \"${5:./tmp}\"",
+      "---",
+      "",
+      "$0"
+    ],
+    "description": "Create AgentUse file with MCP server"
+  },
+  "AgentUse with Subagent": {
+    "prefix": ["agentuse-subagent", "agent-subagent"],
+    "body": [
+      "---",
+      "model: ${1|anthropic:claude-sonnet-4-0,anthropic:claude-opus-4-1,openai:gpt-5|}",
+      "subagents:",
+      "  - path: ./${2:helper}.agentuse",
+      "    name: ${3:helper}",
+      "---",
+      "",
+      "## Task",
+      "Use the ${3:helper} subagent to $0"
+    ],
+    "description": "Create AgentUse file with subagent"
+  },
+  "MCP Server - Filesystem": {
+    "prefix": ["mcp-filesystem", "mcp-fs"],
+    "body": [
+      "filesystem:",
+      "  command: \"npx\"",
+      "  args:",
+      "    - \"-y\"",
+      "    - \"@modelcontextprotocol/server-filesystem\"",
+      "    - \"${1:./tmp}\""
+    ],
+    "description": "Add filesystem MCP server"
+  },
+  "MCP Server - Puppeteer": {
+    "prefix": ["mcp-puppeteer", "mcp-browser"],
+    "body": [
+      "puppeteer:",
+      "  command: \"npx\"",
+      "  args:",
+      "    - \"-y\"",
+      "    - \"@modelcontextprotocol/server-puppeteer\""
+    ],
+    "description": "Add Puppeteer browser automation MCP server"
+  },
+  "MCP Server - Slack": {
+    "prefix": ["mcp-slack"],
+    "body": [
+      "slack:",
+      "  command: \"npx\"",
+      "  args:",
+      "    - \"-y\"",
+      "    - \"@modelcontextprotocol/server-slack\"",
+      "  allowedEnvVars:",
+      "    - SLACK_BOT_TOKEN",
+      "    - SLACK_TEAM_ID"
+    ],
+    "description": "Add Slack integration MCP server"
+  },
+  "MCP Server - Slack Webhook": {
+    "prefix": ["mcp-slack-webhook"],
+    "body": [
+      "slack:",
+      "  command: \"npx\"",
+      "  args:",
+      "    - \"-y\"",
+      "    - \"@agentuse/mcp-slack-webhook\"",
+      "  requiredEnvVars:",
+      "    - SLACK_WEBHOOK_URL"
+    ],
+    "description": "Add Slack webhook MCP server"
+  },
+  "MCP Server - GitHub": {
+    "prefix": ["mcp-github"],
+    "body": [
+      "github:",
+      "  command: \"npx\"",
+      "  args:",
+      "    - \"-y\"",
+      "    - \"@modelcontextprotocol/server-github\"",
+      "  requiredEnvVars:",
+      "    - GITHUB_PERSONAL_ACCESS_TOKEN"
+    ],
+    "description": "Add GitHub API MCP server"
+  },
+  "MCP Server - Fetch": {
+    "prefix": ["mcp-fetch", "mcp-http"],
+    "body": [
+      "fetch:",
+      "  command: \"uvx\"",
+      "  args:",
+      "    - \"mcp-server-fetch\""
+    ],
+    "description": "Add HTTP fetch MCP server"
+  },
+  "MCP Server - SQLite": {
+    "prefix": ["mcp-sqlite", "mcp-db"],
+    "body": [
+      "sqlite:",
+      "  command: \"uvx\"",
+      "  args:",
+      "    - \"mcp-server-sqlite\"",
+      "    - \"--db-path\"",
+      "    - \"${1:./data.db}\""
+    ],
+    "description": "Add SQLite database MCP server"
+  },
+  "MCP Server - PostgreSQL": {
+    "prefix": ["mcp-postgres", "mcp-pg"],
+    "body": [
+      "postgres:",
+      "  command: \"npx\"",
+      "  args:",
+      "    - \"-y\"",
+      "    - \"@modelcontextprotocol/server-postgres\"",
+      "  requiredEnvVars:",
+      "    - POSTGRES_CONNECTION_STRING"
+    ],
+    "description": "Add PostgreSQL database MCP server"
+  },
+  "MCP Server - Notion": {
+    "prefix": ["mcp-notion"],
+    "body": [
+      "notion:",
+      "  command: \"npx\"",
+      "  args:",
+      "    - \"-y\"",
+      "    - \"@suekou/mcp-notion-server\"",
+      "  requiredEnvVars:",
+      "    - NOTION_API_KEY"
+    ],
+    "description": "Add Notion integration MCP server"
+  },
+  "MCP Server - Memory": {
+    "prefix": ["mcp-memory"],
+    "body": [
+      "memory:",
+      "  command: \"npx\"",
+      "  args:",
+      "    - \"-y\"",
+      "    - \"@modelcontextprotocol/server-memory\""
+    ],
+    "description": "Add persistent memory MCP server"
+  },
+  "MCP Server - Brave Search": {
+    "prefix": ["mcp-brave", "mcp-search"],
+    "body": [
+      "brave-search:",
+      "  command: \"npx\"",
+      "  args:",
+      "    - \"-y\"",
+      "    - \"@modelcontextprotocol/server-brave-search\"",
+      "  requiredEnvVars:",
+      "    - BRAVE_API_KEY"
+    ],
+    "description": "Add Brave Search API MCP server"
+  },
+  "MCP Server - Remote": {
+    "prefix": ["mcp-remote"],
+    "body": [
+      "${1:remote}:",
+      "  url: \"${2:https://api.example.com/mcp}\"",
+      "  auth:",
+      "    type: bearer",
+      "    token: \\${${3:API_KEY}}"
+    ],
+    "description": "Add remote MCP server with authentication"
+  },
+  "Subagent Definition": {
+    "prefix": ["subagent", "sub"],
+    "body": [
+      "- path: ./${1:helper}.agentuse",
+      "  name: ${2:$1}"
+    ],
+    "description": "Add a subagent definition"
+  },
+  "Tools List": {
+    "prefix": ["tools"],
+    "body": [
+      "tools:",
+      "  - ${1:tool-name}"
+    ],
+    "description": "Add custom tools section"
+  }
+}

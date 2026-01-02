@@ -1,0 +1,113 @@
+{
+  "name": "agentuse-runner",
+  "displayName": "AgentUse Runner",
+  "description": "Run .agentuse files with IntelliSense, syntax highlighting, and autocomplete",
+  "version": "0.1.0",
+  "publisher": "agentuse",
+  "author": {
+    "name": "AgentUse",
+    "url": "https://agentuse.io"
+  },
+  "license": "MIT",
+  "homepage": "https://agentuse.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agentuse/vscode-agentuse"
+  },
+  "bugs": {
+    "url": "https://github.com/agentuse/vscode-agentuse/issues"
+  },
+  "keywords": [
+    "agentuse",
+    "ai",
+    "agent",
+    "automation",
+    "llm",
+    "mcp"
+  ],
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "icon": "icons/icon.png",
+  "galleryBanner": {
+    "color": "#0A0A0A",
+    "theme": "dark"
+  },
+  "preview": true,
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:agentuse"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "agentuse",
+        "aliases": ["AgentUse", "agentuse"],
+        "extensions": [".agentuse"],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./icons/agentuse-letter-logo-black.svg",
+          "dark": "./icons/agentuse-letter-logo-white.svg"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "agentuse",
+        "scopeName": "source.agentuse",
+        "path": "./syntaxes/agentuse.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "agentuse",
+        "path": "./snippets/agentuse.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "agentuse.run",
+        "title": "Run AgentUse File",
+        "icon": "$(play)"
+      },
+      {
+        "command": "agentuse.closeTerminal",
+        "title": "Close Active AgentUse Terminal"
+      }
+    ],
+    "menus": {
+      "editor/title/run": [
+        {
+          "when": "resourceExtname == .agentuse",
+          "command": "agentuse.run",
+          "group": "navigation"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "agentuse.closeTerminal",
+        "key": "ctrl+w",
+        "mac": "cmd+w",
+        "when": "terminalFocus && terminalProcessSupported"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package -o dist/"
+  },
+  "devDependencies": {
+    "@types/node": "^20.x",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.6.2",
+    "typescript": "^5.3.0"
+  }
+}
