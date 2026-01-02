@@ -25,15 +25,20 @@
       "patterns": [
         { "include": "#yaml-comment" },
         { "include": "#yaml-key-model" },
-        { "include": "#yaml-key-mcp" },
+        { "include": "#yaml-key-toplevel-section" },
         { "include": "#yaml-key-toplevel" },
+        { "include": "#yaml-key-list-item-known" },
+        { "include": "#yaml-key-list-item" },
+        { "include": "#yaml-key-known" },
         { "include": "#yaml-key-nested" },
         { "include": "#yaml-value-model" },
         { "include": "#yaml-value-string" },
         { "include": "#yaml-value-number" },
         { "include": "#yaml-value-boolean" },
+        { "include": "#yaml-value-enum" },
         { "include": "#yaml-list-item" },
-        { "include": "#yaml-env-var" }
+        { "include": "#yaml-env-var" },
+        { "include": "#yaml-variable" }
       ]
     },
     "yaml-comment": {
@@ -47,21 +52,48 @@
         "2": { "name": "punctuation.separator.key-value.agentuse" }
       }
     },
-    "yaml-key-mcp": {
-      "match": "^(mcp_servers|subagents|tools)(:)",
+    "yaml-key-toplevel-section": {
+      "match": "^(mcpServers|mcp_servers|subagents|tools|openai)(:)",
       "captures": {
         "1": { "name": "keyword.control.section.agentuse" },
         "2": { "name": "punctuation.separator.key-value.agentuse" }
       }
     },
     "yaml-key-toplevel": {
-      "match": "^(timeout|maxSteps)(:)",
+      "match": "^(description|timeout|maxSteps)(:)",
       "captures": {
         "1": { "name": "variable.parameter.agentuse" },
         "2": { "name": "punctuation.separator.key-value.agentuse" }
       }
     },
+    "yaml-key-list-item-known": {
+      "comment": "List item with known schema field name (e.g., '- filesystem:', '- path:')",
+      "match": "^(\\s*-\\s+)(command|args|env|url|auth|headers|sessionId|requiredEnvVars|allowedEnvVars|disallowedTools|toolTimeout|filesystem|bash|path|paths|permissions|commands|timeout|allowedPaths|name|maxSteps|type|token|reasoningEffort|textVerbosity)(:)",
+      "captures": {
+        "1": { "name": "punctuation.definition.list.agentuse" },
+        "2": { "name": "support.type.property-name.agentuse" },
+        "3": { "name": "punctuation.separator.key-value.agentuse" }
+      }
+    },
+    "yaml-key-list-item": {
+      "comment": "List item with any key name (e.g., '- my-server:')",
+      "match": "^(\\s*-\\s+)(\\w[\\w-]*)(:)",
+      "captures": {
+        "1": { "name": "punctuation.definition.list.agentuse" },
+        "2": { "name": "entity.name.tag.agentuse" },
+        "3": { "name": "punctuation.separator.key-value.agentuse" }
+      }
+    },
+    "yaml-key-known": {
+      "comment": "Known schema field names at any nesting level",
+      "match": "^(\\s+)(command|args|env|url|auth|headers|sessionId|requiredEnvVars|allowedEnvVars|disallowedTools|toolTimeout|filesystem|bash|path|paths|permissions|commands|timeout|allowedPaths|name|maxSteps|type|token|reasoningEffort|textVerbosity)(:)",
+      "captures": {
+        "2": { "name": "support.type.property-name.agentuse" },
+        "3": { "name": "punctuation.separator.key-value.agentuse" }
+      }
+    },
     "yaml-key-nested": {
+      "comment": "Generic nested key (e.g., MCP server names, env var names)",
       "match": "^(\\s+)(\\w[\\w-]*)(:)",
       "captures": {
         "2": { "name": "entity.name.tag.agentuse" },
@@ -69,7 +101,7 @@
       }
     },
     "yaml-value-model": {
-      "match": "(anthropic|openai|openrouter):([\\w.-]+)",
+      "match": "(anthropic|openai|openrouter|google|groq|mistral|ollama):([\\w.-]+)",
       "captures": {
         "0": { "name": "string.unquoted.model.agentuse" }
       }
@@ -94,6 +126,10 @@
       "match": "\\b(true|false)\\b",
       "name": "constant.language.boolean.agentuse"
     },
+    "yaml-value-enum": {
+      "match": "\\b(read|write|edit|low|medium|high|bearer)\\b",
+      "name": "constant.language.enum.agentuse"
+    },
     "yaml-list-item": {
       "match": "^(\\s*)(-)(\\s+)",
       "captures": {
@@ -101,10 +137,17 @@
       }
     },
     "yaml-env-var": {
-      "match": "\\$\\{([A-Z_][A-Z0-9_]*)\\}",
+      "match": "\\$\\{env:([A-Za-z_][A-Za-z0-9_]*)\\}",
       "captures": {
         "0": { "name": "variable.other.envar.agentuse" },
         "1": { "name": "variable.other.envar.name.agentuse" }
+      }
+    },
+    "yaml-variable": {
+      "match": "\\$\\{(root|agentDir|tmpDir)\\}",
+      "captures": {
+        "0": { "name": "variable.other.agentuse" },
+        "1": { "name": "variable.other.name.agentuse" }
       }
     },
     "markdown": {

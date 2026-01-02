@@ -3,172 +3,13 @@ import * as cp from 'child_process';
 import * as path from 'path';
 import * as fs from 'fs';
 
-// ============================================================================
-// Completion Data
-// ============================================================================
-
-const MODELS = [
-    { label: 'anthropic:claude-opus-4-1', detail: 'Most capable Claude model' },
-    { label: 'anthropic:claude-sonnet-4-0', detail: 'Balanced performance and speed' },
-    { label: 'anthropic:claude-3-5-haiku-latest', detail: 'Fast and cost-effective' },
-    { label: 'openai:gpt-5', detail: 'Most capable OpenAI model' },
-    { label: 'openai:gpt-5-mini', detail: 'Balanced OpenAI model' },
-    { label: 'openai:gpt-5-nano', detail: 'Fast and lightweight OpenAI model' },
-    { label: 'openai:gpt-4.1', detail: 'GPT-4.1 model' },
-    { label: 'openai:gpt-4.1-mini', detail: 'Fast GPT-4.1 model' },
-    { label: 'openai:o4-mini', detail: 'Reasoning model' },
-];
-
-const FRONTMATTER_FIELDS = [
-    { label: 'model', detail: 'LLM provider and model', insertText: 'model: ' },
-    { label: 'timeout', detail: 'Execution timeout in milliseconds', insertText: 'timeout: ' },
-    { label: 'maxSteps', detail: 'Maximum reasoning steps', insertText: 'maxSteps: ' },
-    { label: 'tools', detail: 'Custom tool references', insertText: 'tools:\n  - ' },
-    { label: 'mcp_servers', detail: 'MCP server configurations', insertText: 'mcp_servers:\n  ' },
-    { label: 'subagents', detail: 'Sub-agent definitions', insertText: 'subagents:\n  - path: ' },
-];
-
-const MCP_SERVER_FIELDS = [
-    { label: 'command', detail: 'Command to run (npx, node, uvx, uv)', insertText: 'command: ' },
-    { label: 'args', detail: 'Command arguments', insertText: 'args:\n      - ' },
-    { label: 'requiredEnvVars', detail: 'Required environment variables', insertText: 'requiredEnvVars:\n      - ' },
-    { label: 'allowedEnvVars', detail: 'Optional environment variables', insertText: 'allowedEnvVars:\n      - ' },
-    { label: 'env', detail: 'Direct environment variables', insertText: 'env:\n      ' },
-    { label: 'url', detail: 'Remote MCP server URL', insertText: 'url: ' },
-    { label: 'auth', detail: 'Authentication configuration', insertText: 'auth:\n      type: bearer\n      token: ${' },
-];
-
-const MCP_COMMANDS = [
-    { label: 'npx', detail: 'Run npm package' },
-    { label: 'node', detail: 'Run Node.js script' },
-    { label: 'uvx', detail: 'Run Python package' },
-    { label: 'uv', detail: 'Run Python with uv' },
-];
-
-const COMMON_MCP_SERVERS: { [key: string]: { snippet: string; detail: string } } = {
-    'filesystem': {
-        detail: 'File system access',
-        snippet: `filesystem:
-    command: "npx"
-    args:
-      - "-y"
-      - "@modelcontextprotocol/server-filesystem"
-      - "./tmp"`
-    },
-    'puppeteer': {
-        detail: 'Browser automation',
-        snippet: `puppeteer:
-    command: "npx"
-    args:
-      - "-y"
-      - "@modelcontextprotocol/server-puppeteer"`
-    },
-    'slack': {
-        detail: 'Slack integration',
-        snippet: `slack:
-    command: "npx"
-    args:
-      - "-y"
-      - "@modelcontextprotocol/server-slack"
-    allowedEnvVars:
-      - SLACK_BOT_TOKEN
-      - SLACK_TEAM_ID`
-    },
-    'fetch': {
-        detail: 'HTTP fetch capabilities',
-        snippet: `fetch:
-    command: "uvx"
-    args:
-      - "mcp-server-fetch"`
-    },
-    'github': {
-        detail: 'GitHub API access',
-        snippet: `github:
-    command: "npx"
-    args:
-      - "-y"
-      - "@modelcontextprotocol/server-github"
-    requiredEnvVars:
-      - GITHUB_PERSONAL_ACCESS_TOKEN`
-    },
-    'memory': {
-        detail: 'Persistent memory storage',
-        snippet: `memory:
-    command: "npx"
-    args:
-      - "-y"
-      - "@modelcontextprotocol/server-memory"`
-    },
-    'brave-search': {
-        detail: 'Brave search API',
-        snippet: `brave-search:
-    command: "npx"
-    args:
-      - "-y"
-      - "@modelcontextprotocol/server-brave-search"
-    requiredEnvVars:
-      - BRAVE_API_KEY`
-    },
-    'google-maps': {
-        detail: 'Google Maps API',
-        snippet: `google-maps:
-    command: "npx"
-    args:
-      - "-y"
-      - "@modelcontextprotocol/server-google-maps"
-    requiredEnvVars:
-      - GOOGLE_MAPS_API_KEY`
-    },
-    'sqlite': {
-        detail: 'SQLite database access',
-        snippet: `sqlite:
-    command: "uvx"
-    args:
-      - "mcp-server-sqlite"
-      - "--db-path"
-      - "./data.db"`
-    },
-    'postgres': {
-        detail: 'PostgreSQL database access',
-        snippet: `postgres:
-    command: "npx"
-    args:
-      - "-y"
-      - "@modelcontextprotocol/server-postgres"
-    requiredEnvVars:
-      - POSTGRES_CONNECTION_STRING`
-    },
-    'exa': {
-        detail: 'Exa search API',
-        snippet: `exa:
-    command: "npx"
-    args:
-      - "-y"
-      - "exa-mcp-server"
-    requiredEnvVars:
-      - EXA_API_KEY`
-    },
-    'notion': {
-        detail: 'Notion integration',
-        snippet: `notion:
-    command: "npx"
-    args:
-      - "-y"
-      - "@suekou/mcp-notion-server"
-    requiredEnvVars:
-      - NOTION_API_KEY`
-    },
-    'slack-webhook': {
-        detail: 'Slack webhook notifications',
-        snippet: `slack:
-    command: "npx"
-    args:
-      - "-y"
-      - "@agentuse/mcp-slack-webhook"
-    requiredEnvVars:
-      - SLACK_WEBHOOK_URL`
-    },
-};
+// Import generated schema data (synced from CLI via pnpm sync-cli)
+import {
+    MODELS,
+    FRONTMATTER_FIELDS,
+    MCP_SERVER_FIELDS_ALL as MCP_SERVER_FIELDS,
+    MCP_COMMANDS,
+} from './generated/schema';
 
 // ============================================================================
 // Completion Provider
@@ -239,28 +80,15 @@ class AgentUseCompletionProvider implements vscode.CompletionItemProvider {
             ));
         }
 
-        // In mcp_servers block - suggest server names or server config fields
-        if (inMcpServers) {
-            if (indent === 2 && linePrefix.trim() === '') {
-                // Suggest common MCP server templates
-                return Object.entries(COMMON_MCP_SERVERS).map(([name, config]) =>
-                    this.createSnippetCompletion(
-                        name,
-                        config.detail,
-                        config.snippet,
-                        vscode.CompletionItemKind.Module
-                    )
-                );
-            }
-            if (indent >= 4 && linePrefix.trim() === '') {
-                // Inside a server config, suggest fields
-                return MCP_SERVER_FIELDS.map(f => this.createCompletion(
-                    f.label,
-                    f.detail,
-                    f.insertText,
-                    vscode.CompletionItemKind.Property
-                ));
-            }
+        // In mcp_servers block - suggest server config fields
+        if (inMcpServers && indent >= 4 && linePrefix.trim() === '') {
+            // Inside a server config, suggest fields
+            return MCP_SERVER_FIELDS.map(f => this.createCompletion(
+                f.label,
+                f.detail,
+                f.insertText,
+                vscode.CompletionItemKind.Property
+            ));
         }
 
         // In subagents block
@@ -317,7 +145,7 @@ class AgentUseCompletionProvider implements vscode.CompletionItemProvider {
         let inBlock = false;
         for (let i = 0; i <= frontmatterLineIndex; i++) {
             const line = lines[i];
-            if (line.match(/^mcp_servers:/)) {
+            if (line.match(/^(mcp_servers|mcpServers):/)) {
                 inBlock = true;
             } else if (inBlock && line.trim() && !line.match(/^\s/)) {
                 inBlock = false;
@@ -449,6 +277,102 @@ class AgentUseCompletionProvider implements vscode.CompletionItemProvider {
         item.detail = detail;
         item.insertText = new vscode.SnippetString(snippet);
         return item;
+    }
+}
+
+// ============================================================================
+// Inline Completion Provider (overrides Copilot in .agentuse files)
+// ============================================================================
+
+class AgentUseInlineCompletionProvider implements vscode.InlineCompletionItemProvider {
+    provideInlineCompletionItems(
+        document: vscode.TextDocument,
+        position: vscode.Position,
+        context: vscode.InlineCompletionContext,
+        _token: vscode.CancellationToken
+    ): vscode.ProviderResult<vscode.InlineCompletionItem[] | vscode.InlineCompletionList> {
+        const text = document.getText();
+        const lineText = document.lineAt(position.line).text;
+        const linePrefix = lineText.substring(0, position.character);
+
+        // Check if we're in frontmatter
+        const frontmatterMatch = text.match(/^---\n([\s\S]*?)(\n---|\n?$)/);
+        if (!frontmatterMatch) {
+            return [];
+        }
+
+        const frontmatterEnd = frontmatterMatch[0].length;
+        const cursorOffset = document.offsetAt(position);
+        if (cursorOffset < 4 || cursorOffset > frontmatterEnd) {
+            return [];
+        }
+
+        // Provide inline completions for specific patterns
+        const suggestions: { pattern: RegExp; completion: string }[] = [
+            // After "tools:" on empty line with 2-space indent
+            { pattern: /^  $/, completion: 'filesystem:\n    - path: ${root}/\n      permissions:\n        - read' },
+            // After "model:"
+            { pattern: /^\s*model:\s*$/, completion: 'anthropic:claude-opus-4-5' },
+            // After "mcpServers:" on empty line with 2-space indent
+            { pattern: /^  $/, completion: '' }, // Let regular completion handle this
+        ];
+
+        // Check context - are we after "tools:"?
+        const frontmatterContent = frontmatterMatch[1];
+        const lines = frontmatterContent.split('\n');
+        const frontmatterLineIndex = position.line - 1;
+
+        if (frontmatterLineIndex >= 0 && frontmatterLineIndex < lines.length) {
+            // Check if previous non-empty line is "tools:"
+            let prevLineIndex = frontmatterLineIndex - 1;
+            while (prevLineIndex >= 0 && lines[prevLineIndex].trim() === '') {
+                prevLineIndex--;
+            }
+
+            if (prevLineIndex >= 0) {
+                const prevLine = lines[prevLineIndex];
+
+                // After "tools:" - suggest filesystem config
+                if (prevLine.match(/^tools:\s*$/) && linePrefix.match(/^\s*$/)) {
+                    const indent = linePrefix;
+                    const completion = `filesystem:\n${indent}  - path: \${root}/\n${indent}    permissions:\n${indent}      - read`;
+                    return [new vscode.InlineCompletionItem(completion, new vscode.Range(position, position))];
+                }
+
+                // After "mcpServers:" - suggest a common server
+                if (prevLine.match(/^mcpServers:\s*$/) && linePrefix.match(/^\s*$/)) {
+                    const indent = linePrefix;
+                    const completion = `fetch:\n${indent}  command: "uvx"\n${indent}  args:\n${indent}    - "mcp-server-fetch"`;
+                    return [new vscode.InlineCompletionItem(completion, new vscode.Range(position, position))];
+                }
+            }
+        }
+
+        // Return empty to suppress Copilot suggestions in frontmatter
+        // Only return [] when we're definitely in a context where Copilot would be wrong
+        if (this.isInBlockContext(frontmatterContent, frontmatterLineIndex, ['tools', 'mcpServers', 'mcp_servers', 'subagents'])) {
+            return []; // Suppress Copilot here
+        }
+
+        return []; // Let Copilot handle other cases
+    }
+
+    private isInBlockContext(frontmatter: string, lineIndex: number, blockNames: string[]): boolean {
+        const lines = frontmatter.split('\n');
+        if (lineIndex < 0 || lineIndex >= lines.length) {
+            return false;
+        }
+
+        let currentBlock: string | null = null;
+        for (let i = 0; i <= lineIndex; i++) {
+            const line = lines[i];
+            const blockMatch = line.match(/^(\w+):/);
+            if (blockMatch) {
+                currentBlock = blockMatch[1];
+            }
+        }
+
+        return currentBlock !== null && blockNames.includes(currentBlock);
     }
 }
 

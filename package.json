@@ -99,8 +99,10 @@
     ]
   },
   "scripts": {
+    "sync-cli": "npx tsx scripts/sync-cli.ts",
+    "prebuild": "pnpm sync-cli",
     "vscode:prepublish": "pnpm run compile",
-    "compile": "tsc -p ./",
+    "compile": "pnpm sync-cli && tsc -p ./",
     "watch": "tsc -watch -p ./",
     "package": "vsce package -o dist/"
   },
@@ -108,6 +110,7 @@
     "@types/node": "^20.x",
     "@types/vscode": "^1.85.0",
     "@vscode/vsce": "^3.6.2",
+    "tsx": "^4.7.0",
     "typescript": "^5.3.0"
   }
 }
