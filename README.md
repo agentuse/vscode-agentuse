@@ -1,11 +1,12 @@
 # AgentUse Runner for VS Code
 
 [![VS Marketplace](https://img.shields.io/visual-studio-marketplace/v/agentuse.agentuse-runner?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=agentuse.agentuse-runner)
+[![Open VSX](https://img.shields.io/open-vsx/v/agentuse/agentuse-runner?style=flat-square)](https://open-vsx.org/extension/agentuse/agentuse-runner)
 [![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
 
 Run `.agentuse` AI agent workflows directly in VS Code with IntelliSense, syntax highlighting, and one-click execution.
 
-![Demo](https://raw.githubusercontent.com/agentuse/vscode-agentuse/main/images/demo.gif)
+> **Preview Release** - This extension is in active development.
 
 ## Features
 

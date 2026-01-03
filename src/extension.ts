@@ -9,6 +9,7 @@ import {
     FRONTMATTER_FIELDS,
     MCP_SERVER_FIELDS_ALL as MCP_SERVER_FIELDS,
     MCP_COMMANDS,
+    COMMON_MCP_SERVERS,
 } from './generated/schema';
 
 // ============================================================================

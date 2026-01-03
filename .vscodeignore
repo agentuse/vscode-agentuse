@@ -5,3 +5,11 @@ src/**
 tsconfig.json
 **/*.map
 **/*.ts
+node_modules/**
+.git/**
+tmp/**
+scripts/**
+pnpm-lock.yaml
+.claude/**
+*.agentuse
+.env*
